@@ -72,12 +72,12 @@ end
 # //  this is just to keep a record or registers
 # //
 
-def qreg(firstname,lastname,username,devmake,devmodel,devmac,devprob,devagent)
+def qreg(firstname,lastname,username,devmake,devmodel,devmac,devagent)
   conn = PGconn.connect("localhost",5432,'','',CONFIG['setup']['db']['dbname'],CONFIG['setup']['db']['user'],CONFIG['setup']['db']['password'])
    begin
     t = Time.now    
     insert_time = t.strftime("%Y-%m-%d %H:%M:%S")
-    $ins = conn.exec("insert into maestro_reg values ('#{firstname}','#{lastname}','#{username}','#{devmake}','#{devmodel}','#{devmac}','#{devprob}','#{insert_time}','#{devagent}');");
+    $ins = conn.exec("insert into maestro_reg values ('#{firstname}','#{lastname}','#{username}','#{devmake}','#{devmodel}','#{devmac}','#{insert_time}','#{devagent}');");
    rescue
     puts "insert failed"
    else
@@ -148,7 +148,7 @@ get '/' do
   qip(@env['REMOTE_ADDR'])
   $devmac = $res[0][0]
 
-  inputs = ["firstname","lastname","username","devmake","devmodel","devprob"]
+  inputs = ["firstname","lastname","username","devmake","devmodel"]
   
   inputs.each do |value|
    params[:"#{value}"] = ""
@@ -213,7 +213,7 @@ post '/' do
  # //
  # // massage form data
  # //
- inputs = ["firstname","lastname","username","devmake","devmodel","devprob","agreement"]
+ inputs = ["firstname","lastname","username","devmake","devmodel","agreement"]
 
 
  # /////
@@ -254,7 +254,7 @@ post '/' do
    # //
    # // throw it in the db
    # //
-   qreg(params[:firstname],params[:lastname],params[:username],params[:devmake],params[:devmodel],$res[0][0],params[:devprob],@env['HTTP_USER_AGENT'])
+   qreg(params[:firstname],params[:lastname],params[:username],params[:devmake],params[:devmodel],$res[0][0],@env['HTTP_USER_AGENT'])
    
    # /////
    # //
