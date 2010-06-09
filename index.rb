@@ -242,7 +242,7 @@ post '/' do
  # //
  if checks_ok == "yes"
 
-  checkoobip(@env['REMOTE_ADDR'])
+  checkoobmac($res[0][0])
   checkmac($res[0][0])
    puts "mac addr:", $res[0][0]
    puts "registered:", $registered
