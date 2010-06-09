@@ -76,6 +76,9 @@ end
 
 def regmac(mac,desc)
 
+ puts "mac in function"
+ puts mac
+
  c = Curl::Easy.new("https://#{CONFIG['setup']['api']['url']}/admin/cisco_api.jsp") do |curl|
  curl.headers["User-Agent"] = "CA API"
  curl.http_post("https://#{CONFIG['setup']['api']['url']}/admin/cisco_api.jsp",
@@ -176,7 +179,7 @@ end
 # //   need to register
 # //
 
-def checkoobip(ip)
+def checkoobmac(mac)
 
  c = Curl::Easy.new("https://#{CONFIG['setup']['api']['url']}/admin/cisco_api.jsp") do |curl|
  curl.headers["User-Agent"] = "CA API"
@@ -184,10 +187,18 @@ def checkoobip(ip)
                             Curl::PostField.content('admin', CONFIG['setup']['api']['user']),
                             Curl::PostField.content('passwd', CONFIG['setup']['api']['password']),
                             Curl::PostField.content('op', 'getoobuserinfo'),
-                            Curl::PostField.content('qtype', 'ip'),
-                            Curl::PostField.content('qval', ip))
-
+                            Curl::PostField.content('qtype', 'mac'),
+                            Curl::PostField.content('qval', mac))
  end
+ 
+ # // curl.http_post("https://#{CONFIG['setup']['api']['url']}/admin/cisco_api.jsp",
+ # //                            Curl::PostField.content('admin', CONFIG['setup']['api']['user']),
+ # //                            Curl::PostField.content('passwd', CONFIG['setup']['api']['password']),
+ # //                            Curl::PostField.content('op', 'getoobuserinfo'),
+ # //                            Curl::PostField.content('qtype', 'ip'),
+ # //                            Curl::PostField.content('qval', ip))
+ # //
+ # // end
 
  c.perform
 

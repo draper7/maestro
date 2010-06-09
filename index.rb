@@ -13,6 +13,7 @@ require 'haml'
 require 'yaml'
 require 'time'
 require 'postgres'
+require 'ipaddr'
 require 'caapi'
 
 
@@ -46,9 +47,9 @@ def qip(src_addr)
    begin
     $res  = conn.exec("select src_mac,insert_time from dstil_mac where src_ip='#{src_addr}' order by insert_time desc limit 1;");
    rescue
-     # puts "query failed"
+      # // puts "query failed"
    else
-     # puts "query ok"
+      # // puts "query ok"
    end
   conn.close()
 end
@@ -76,11 +77,12 @@ def qreg(firstname,lastname,username,devmake,devmodel,devmac,devprob,devagent)
    begin
     t = Time.now    
     insert_time = t.strftime("%Y-%m-%d %H:%M:%S")
-    $res = conn.exec("insert into dstil_reg values ('#{firstname}','#{lastname}','#{username}','#{devmake}','#{devmodel}','#{devmac}','#{devprob}','#{insert_time}','#{devagent}');");
+    $ins = conn.exec("insert into dstil_reg values ('#{firstname}','#{lastname}','#{username}','#{devmake}','#{devmodel}','#{devmac}','#{devprob}','#{insert_time}','#{devagent}');");
    rescue
-     # ///// puts "query failed"
+    puts "insert failed"
    else
-     # ///// puts "query ok"
+    puts "insert ok"
+    # // puts "'#{firstname}','#{lastname}','#{username}','#{devmake}','#{devmodel}','#{devmac}','#{devprob}','#{insert_time}','#{devagent}'"
    end
   conn.close()
 end
@@ -129,6 +131,16 @@ end
 
 get '/' do
 
+ v801 = IPAddr.new("172.16.16.0/20")
+ v803 = IPAddr.new("172.16.32.0/20")
+
+ naddr = @env['REMOTE_ADDR']
+
+ n801 = v801.include?(IPAddr.new(naddr))
+ n803 = v803.include?(IPAddr.new(naddr))
+
+ if n801 == true or n803 == true
+
   $checks_ok = "no"
   $registered = nil
   $loggedin = nil
@@ -145,6 +157,8 @@ get '/' do
   params[:agreement] = "on"
 
   haml :index
+
+ end
 
 end
 
@@ -230,9 +244,9 @@ post '/' do
 
   checkoobip(@env['REMOTE_ADDR'])
   checkmac($res[0][0])
-
-   puts $registered
-   puts $loggedin
+   puts "mac addr:", $res[0][0]
+   puts "registered:", $registered
+   puts "logged in:", $loggedin
   
   if $registered == "no" && $loggedin == "no"
 
