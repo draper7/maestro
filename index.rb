@@ -45,7 +45,7 @@ CONFIG = YAML::load(File.read('config/maestro.yaml'))
 def qip(src_addr)
   conn = PGconn.connect("localhost",5432,'','',CONFIG['setup']['db']['dbname'],CONFIG['setup']['db']['user'],CONFIG['setup']['db']['password'])
    begin
-    $res  = conn.exec("select src_mac,insert_time from dstil_mac where src_ip='#{src_addr}' order by insert_time desc limit 1;");
+    $res  = conn.exec("select src_mac,insert_time from maestro_mac where src_ip='#{src_addr}' order by insert_time desc limit 1;");
    rescue
       # // puts "query failed"
    else
@@ -77,7 +77,7 @@ def qreg(firstname,lastname,username,devmake,devmodel,devmac,devprob,devagent)
    begin
     t = Time.now    
     insert_time = t.strftime("%Y-%m-%d %H:%M:%S")
-    $ins = conn.exec("insert into dstil_reg values ('#{firstname}','#{lastname}','#{username}','#{devmake}','#{devmodel}','#{devmac}','#{devprob}','#{insert_time}','#{devagent}');");
+    $ins = conn.exec("insert into maestro_reg values ('#{firstname}','#{lastname}','#{username}','#{devmake}','#{devmodel}','#{devmac}','#{devprob}','#{insert_time}','#{devagent}');");
    rescue
     puts "insert failed"
    else
