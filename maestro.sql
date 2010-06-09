@@ -2,7 +2,7 @@
     database structure for maestro
 */
 
-CREATE DATABASE dstil;
+CREATE DATABASE maestro;
 
 CREATE TABLE maestro_mac
 	(
